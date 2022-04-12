@@ -4,12 +4,11 @@ function App() {
 
   const store = useSelector(store => store)
   const dispatch = useDispatch()
-  console.log(store)
   return (
     <div className="App">
       123
       <button
-        onClick={() => dispatch({ type: 'CLICK' })}
+        onClick={() => dispatch({ type: 'LOAD_DATA' })}
       >
         click
       </button>
