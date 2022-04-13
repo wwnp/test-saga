@@ -1,27 +1,22 @@
 /* eslint-disable require-yield */
-import { all, call, delay, fork, put, spawn, take, takeEvery } from 'redux-saga/effects';
-import { loadBasicData } from './initialSagas';
-
-function* asyncInc() {
-  yield delay(1000)
-  yield put({ type: 'INC' })
-}
+import { all, call, spawn } from 'redux-saga/effects';
+import loadBasicData from './initialSagas';
+import pageLoaderSaga from './pageLoaderSaga';
 
 export default function* rootSaga() {
-  yield takeEvery('INC_ASYNC', asyncInc)
-  yield take("DEC")
-  // const sagas = [loadBasicData, counter]
-  // const retrySagas = sagas.map(saga => {
-  //   return spawn(function* () {
-  //     while (true) {
-  //       try {
-  //         yield call(saga)
-  //         break
-  //       } catch (e) {
-  //       }
-  //     }
-  //   })
-  // })
-  // yield all(retrySagas)
+  // const sagas = [pageLoaderSaga]
+  const sagas = [loadBasicData, pageLoaderSaga]
+  const retrySagas = sagas.map(saga => {
+    return spawn(function* () {
+      while (true) {
+        try {
+          yield call(saga)
+          break
+        } catch (e) {
+        }
+      }
+    })
+  })
+  yield all(retrySagas)
 }
 
